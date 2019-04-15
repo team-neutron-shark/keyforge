@@ -150,12 +150,15 @@ func (p *Player) PlayCard(card Card) {
 
 }
 
-func (p *Player) ForgeKey() {
+func (p *Player) ForgeKey() bool {
 	if p.Amber > 6 {
 		fmt.Println(p.Name, "forges a key!")
 		p.Keys++
 		p.Amber -= 6
+		return true
 	}
+
+	return false
 }
 
 // CalculateChainHandicap - Returns the total number of cards to reduce
