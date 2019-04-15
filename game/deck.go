@@ -6,6 +6,7 @@ import (
 	"math/rand"
 )
 
+// Deck - Type used for containing deck information, including card data.
 type Deck struct {
 	Name          string   `json:"name"`
 	Expansion     int      `json:"expansion"`
@@ -24,6 +25,7 @@ type Deck struct {
 	CardList      []string `json:"card_list"`
 }
 
+// LoadDeckFromFile - Load deck data from file contents.
 func LoadDeckFromFile(fileName string) (Deck, error) {
 	deck := Deck{}
 
@@ -42,6 +44,9 @@ func LoadDeckFromFile(fileName string) (Deck, error) {
 	return deck, nil
 }
 
+// ChooseRandomDeck - Choose a deck at random from an array of decks. This
+// function is mostly useful for selecting random results from the vault
+// deck search function.
 func ChooseRandomDeck(decks []Deck) Deck {
 	choice := rand.Intn(len(decks))
 	return decks[choice]
