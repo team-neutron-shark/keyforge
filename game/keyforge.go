@@ -4,8 +4,8 @@ import (
 	"strings"
 )
 
-func HouseExists(array *[]string, house string) bool {
-	for _, s := range *array {
+func HouseExists(array []string, house string) bool {
+	for _, s := range array {
 		if strings.ToLower(s) == strings.ToLower(house) {
 			return true
 		}

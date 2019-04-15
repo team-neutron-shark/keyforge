@@ -3,6 +3,7 @@ package keyforge
 import (
 	"encoding/json"
 	"io/ioutil"
+	"math/rand"
 )
 
 type Deck struct {
@@ -39,4 +40,9 @@ func LoadDeckFromFile(fileName string) (Deck, error) {
 	}
 
 	return deck, nil
+}
+
+func ChooseRandomDeck(decks []Deck) Deck {
+	choice := rand.Intn(len(decks))
+	return decks[choice]
 }

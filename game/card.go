@@ -143,7 +143,7 @@ func FindCardsByID(cards []Card, cardID string) ([]Card, error) {
 // This ends up being useful mostly for detecting mavericks in a pile.
 func FindCardByNumber(cards []Card, setNumber int, cardNumber int) (Card, error) {
 	for _, card := range cards {
-		if card.CardNumber == cardNumber && card.CardNumber == setNumber {
+		if card.CardNumber == cardNumber && card.Expansion == setNumber {
 			return card, nil
 		}
 	}
@@ -151,13 +151,14 @@ func FindCardByNumber(cards []Card, setNumber int, cardNumber int) (Card, error)
 	return Card{}, errors.New(errorMessage)
 }
 
-// FindCardByNumber - Find a cards in a pile given a set and card number.
-// This ends up being useful mostly for detecting mavericks in a pile.
+// FindCardsByNumber - Find cards in a pile given a set and card number.
+// This ends up being useful mostly for detecting mavericks in a pile since
+// mavericks are assigned unique card IDs in the Vault.
 func FindCardsByNumber(cards []Card, setNumber int, cardNumber int) ([]Card, error) {
 	totalCards := []Card{}
 
 	for _, card := range cards {
-		if card.CardNumber == cardNumber && card.CardNumber == setNumber {
+		if card.CardNumber == cardNumber && card.Expansion == setNumber {
 			totalCards = append(totalCards, card)
 		}
 	}
@@ -258,7 +259,7 @@ func GetHouses(cards []Card) []string {
 	houses := []string{}
 
 	for _, card := range cards {
-		if !HouseExists(&houses, card.House) {
+		if !HouseExists(houses, card.House) {
 			houses = append(houses, card.House)
 		}
 	}

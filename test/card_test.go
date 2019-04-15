@@ -95,6 +95,66 @@ func TestCardGetUpgradeCards(t *testing.T) {
 	}
 }
 
+func TestCardFindCardByNumber(t *testing.T) {
+	deck, e := keyforge.LoadDeckFromFile("test_data/test_deck.json")
+
+	if e != nil {
+		t.Error(e.Error())
+	}
+
+	_, e = keyforge.FindCardByNumber(deck.Cards, 341, 14)
+
+	if e != nil {
+		t.Error(e.Error())
+	}
+}
+
+func TestCardFindCardsByNumber(t *testing.T) {
+	deck, e := keyforge.LoadDeckFromFile("test_data/test_deck.json")
+
+	if e != nil {
+		t.Error(e.Error())
+	}
+
+	cards, e := keyforge.FindCardsByNumber(deck.Cards, 341, 14)
+
+	if e != nil {
+		t.Error(e.Error())
+	}
+
+	if len(cards) < 1 {
+		t.Errorf("Could not find test card; should have 1 in the deck.")
+	}
+
+	cards, e = keyforge.FindCardsByNumber(deck.Cards, 341, 7)
+
+	if e != nil {
+		t.Error(e.Error())
+	}
+
+	if len(cards) < 2 {
+		t.Errorf("Could not find test card; should have 2 in the deck.")
+	}
+}
+
+func TestCardFindCardsByHouse(t *testing.T) {
+	deck, e := keyforge.LoadDeckFromFile("test_data/test_deck.json")
+
+	if e != nil {
+		t.Error(e.Error())
+	}
+
+	cards, e := keyforge.FindCardsByHouse(deck.Cards, "Dis")
+
+	if e != nil {
+		t.Error(e.Error())
+	}
+
+	if len(cards) != 12 {
+		t.Errorf("Deck contains %d Dis cards! Should contain 12.", len(cards))
+	}
+}
+
 func TestCardRemoveCard(t *testing.T) {
 	deck, e := keyforge.LoadDeckFromFile("test_data/test_deck.json")
 
