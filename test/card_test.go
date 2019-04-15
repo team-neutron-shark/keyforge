@@ -1,0 +1,253 @@
+package tests
+
+import (
+	keyforge "keyforge/game"
+	"testing"
+)
+
+func TestCardGetActionCards(t *testing.T) {
+	deck, e := keyforge.LoadDeckFromFile("test_data/test_deck.json")
+
+	if e != nil {
+		t.Error(e.Error())
+	}
+
+	actions := keyforge.GetActionCards(deck.Cards)
+
+	if len(actions) != 16 {
+		t.Errorf("Deck contains %d actions cards! Should be 16 cards.", len(actions))
+	}
+}
+
+func TestCardGetArtifactCards(t *testing.T) {
+	deck, e := keyforge.LoadDeckFromFile("test_data/test_deck.json")
+
+	if e != nil {
+		t.Error(e.Error())
+	}
+
+	artifacts := keyforge.GetArtifactCards(deck.Cards)
+
+	if len(artifacts) != 3 {
+		t.Errorf("Deck contains %d artifact cards! Should be 3 cards.", len(artifacts))
+	}
+}
+
+func TestCardGetCreatureCards(t *testing.T) {
+	deck, e := keyforge.LoadDeckFromFile("test_data/test_deck.json")
+
+	if e != nil {
+		t.Error(e.Error())
+	}
+
+	creatures := keyforge.GetCreatureCards(deck.Cards)
+
+	if len(creatures) != 16 {
+		t.Errorf("Deck contains %d artifact cards! Should be 16 cards.", len(creatures))
+	}
+}
+
+func TestCardFindCardByID(t *testing.T) {
+	deck, e := keyforge.LoadDeckFromFile("test_data/test_deck.json")
+
+	if e != nil {
+		t.Error(e.Error())
+	}
+
+	// Deck contains two Coward's End cards, should be able to find one
+	_, e = keyforge.FindCardByID(deck.Cards, "d438faa9-7920-437a-8d1c-682fade5d350")
+
+	if e != nil {
+		t.Error(e.Error())
+	}
+}
+
+func TestCardFindCardsByID(t *testing.T) {
+	deck, e := keyforge.LoadDeckFromFile("test_data/test_deck.json")
+
+	if e != nil {
+		t.Error(e.Error())
+	}
+
+	// Deck contains two Coward's End cards
+	cards, e := keyforge.FindCardsByID(deck.Cards, "d438faa9-7920-437a-8d1c-682fade5d350")
+
+	if e != nil {
+		t.Error(e.Error())
+	}
+
+	if len(cards) != 2 {
+		t.Errorf("Deck contains %d artifact cards! Should be 2 cards.", len(cards))
+	}
+}
+
+func TestCardGetUpgradeCards(t *testing.T) {
+	deck, e := keyforge.LoadDeckFromFile("test_data/test_deck.json")
+
+	if e != nil {
+		t.Error(e.Error())
+	}
+
+	upgrades := keyforge.GetUpgradeCards(deck.Cards)
+
+	if len(upgrades) != 1 {
+		t.Errorf("Deck contains %d artifact cards! Should be 1 card.", len(upgrades))
+	}
+}
+
+func TestCardRemoveCard(t *testing.T) {
+	deck, e := keyforge.LoadDeckFromFile("test_data/test_deck.json")
+
+	if e != nil {
+		t.Error(e.Error())
+	}
+
+	// Test deck contains two Coward's End cards, we're going to remove one
+	card, e := keyforge.FindCardByID(deck.Cards, "d438faa9-7920-437a-8d1c-682fade5d350")
+
+	if e != nil {
+		t.Error(e.Error())
+	}
+
+	deck.Cards = keyforge.RemoveCard(deck.Cards, card)
+
+	if len(deck.Cards) != 35 {
+		t.Errorf("Deck contains %d cards after one card removed! Should be 35 cards.", len(deck.Cards))
+	}
+
+	cards, e := keyforge.FindCardsByID(deck.Cards, "d438faa9-7920-437a-8d1c-682fade5d350")
+
+	if e != nil {
+		t.Error(e.Error())
+	}
+
+	// Test deck should containg one Coward's End at this point.
+	if len(cards) != 1 {
+		t.Errorf("Detecteds %d Coward's End cards. Should be 1 remaining.", len(cards))
+	}
+}
+
+func TestCardAddCard(t *testing.T) {
+	cardPile := []keyforge.Card{}
+
+	deck, e := keyforge.LoadDeckFromFile("test_data/test_deck.json")
+
+	if e != nil {
+		t.Error(e.Error())
+	}
+
+	card, e := keyforge.FindCardByID(deck.Cards, "d438faa9-7920-437a-8d1c-682fade5d350")
+
+	if e != nil {
+		t.Error(e.Error())
+	}
+
+	cardPile = keyforge.AddCard(cardPile, card)
+
+	if len(cardPile) != 1 {
+		t.Errorf("Card pile contains %d cards after one card removed! Should be 1 card.", len(cardPile))
+	}
+
+	if cardPile[0].ID != "d438faa9-7920-437a-8d1c-682fade5d350" {
+		t.Errorf("The wrong card was somehow added to the card pile. Card ID added: %s.", cardPile[0].ID)
+	}
+}
+
+func TestCardShuffle(t *testing.T) {
+	copyCards := []keyforge.Card{}
+	deck, e := keyforge.LoadDeckFromFile("test_data/test_deck.json")
+
+	copyCards = append(copyCards, deck.Cards...)
+
+	if e != nil {
+		t.Error(e.Error())
+	}
+
+	copyCards = keyforge.Shuffle(copyCards)
+
+	if keyforge.CompareCardOrder(deck.Cards, copyCards) {
+		t.Error("Cards have not been shuffled!")
+	}
+}
+
+func TestCardPopCard(t *testing.T) {
+	deck, e := keyforge.LoadDeckFromFile("test_data/test_deck.json")
+
+	if e != nil {
+		t.Error(e.Error())
+	}
+
+	card := deck.Cards[len(deck.Cards)-1]
+
+	deck.Cards = keyforge.PopCard(deck.Cards)
+
+	compareCard := deck.Cards[len(deck.Cards)-1]
+
+	if card.ID == compareCard.ID {
+		t.Error("Card was not popped off the pile!")
+	}
+}
+
+func TestCardDrawCard(t *testing.T) {
+	hand := []keyforge.Card{}
+	deck, e := keyforge.LoadDeckFromFile("test_data/test_deck.json")
+
+	if e != nil {
+		t.Error(e.Error())
+	}
+
+	deck.Cards, hand = keyforge.DrawCard(deck.Cards, hand)
+
+	if len(hand) != 1 {
+		t.Errorf("There are %d cards in the hand! Should be 1 card.", len(hand))
+	}
+
+	if hand[0].ID != "bec84d69-68f0-456c-a7bd-9f1e94d55a22" {
+		t.Errorf("Should have drawn Experimental Therapy, drew %s instead!", hand[0].CardTitle)
+	}
+}
+
+func TestCardCompareCardOrder(t *testing.T) {
+	copyCards := []keyforge.Card{}
+	deck, e := keyforge.LoadDeckFromFile("test_data/test_deck.json")
+
+	if e != nil {
+		t.Error(e.Error())
+	}
+
+	copyCards = append(copyCards, deck.Cards...)
+
+	if !keyforge.CompareCardOrder(deck.Cards, copyCards) {
+		t.Error("Card orders do not match!")
+	}
+
+	copyCards = keyforge.Shuffle(copyCards)
+
+	if keyforge.CompareCardOrder(deck.Cards, copyCards) {
+		t.Error("Card orders match after shuffling!")
+	}
+}
+
+func TestCardCardExists(t *testing.T) {
+	deck, e := keyforge.LoadDeckFromFile("test_data/test_deck.json")
+
+	if e != nil {
+		t.Error(e.Error())
+	}
+
+	card, e := keyforge.FindCardByID(deck.Cards, "0ef760a3-68b9-42a9-93fa-419ea171917b")
+
+	if e != nil {
+		t.Error(e.Error())
+	}
+
+	if !keyforge.CardExists(deck.Cards, card) {
+		t.Errorf("%s not found in deck!", card.CardTitle)
+	}
+
+	deck.Cards = keyforge.RemoveCard(deck.Cards, card)
+
+	if keyforge.CardExists(deck.Cards, card) {
+		t.Errorf("Card %s found after being removed from the deck!", card.CardTitle)
+	}
+}
