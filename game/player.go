@@ -23,6 +23,7 @@ type Player struct {
 	FirstTurn   bool
 	Amber       int
 	Keys        int
+	Chains      int
 }
 
 func NewPlayer() *Player {
@@ -102,6 +103,7 @@ func (p *Player) Discard(card Card) {
 	p.HandPile = RemoveCard(p.HandPile, card)
 	p.DiscardPile = AddCard(p.DiscardPile, card)
 }
+
 func (p *Player) ShuffleDiscardPile() {
 	p.DrawPile = append(p.DrawPile, p.DiscardPile...)
 	p.DiscardPile = nil
@@ -152,4 +154,16 @@ func (p *Player) ForgeKey() {
 		p.Keys++
 		p.Amber -= 6
 	}
+}
+
+// CalculateChainHandicap - Returns the total number of cards to reduce
+// the player's hand upon drawing cards.
+func (p *Player) CalculateChainHandicap() int {
+	chains := int(p.Chains / 6)
+
+	if p.Chains < 6 {
+		chains++
+	}
+
+	return chains
 }
