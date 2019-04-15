@@ -33,6 +33,6 @@ So in a nutshell Go produces fast programs that are supported on just about any 
 architecture.
 
 ## How do I use this code?
-The easiest way to get started with this code is to clone it directly to your GOPATH. For Linux/OSX systems this is located in 
-~/go/src and for Windows systems this path is typically C:\Users\<username>\go\src. Once you've done this it's ready to be
-imported in your Go projects.
+The easiest way to get started with this code is to clone it directly to your GOPATH. For Linux/OSX systems this is located in ~/go/src and for Windows systems this path is typically C:\Users\<username>\go\src. Once you've done this it's ready to be imported in your Go projects.
+
+As with many personal code projects this project is currently devoid of documentation. I'm not a huge fan of sentiment of code being the documentation, but that's where we're currently at. Much of what's there is currently very straightforward, but if you have a question regarding how to use this API feel free to shoot me a line.
