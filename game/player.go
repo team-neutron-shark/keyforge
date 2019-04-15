@@ -123,7 +123,9 @@ func (p *Player) DrawHand() {
 	if p.Debug {
 		fmt.Println(cardNumber, "cards in hand, drawing", 6-cardNumber, "cards.")
 	}
-	for i := cardNumber; i < 6; i++ {
+
+	// Draw back up to 6 cards, minus the handicap imposed by chains.
+	for i := cardNumber; i < 6-p.CalculateChainHandicap(); i++ {
 		p.DrawCard()
 	}
 }
@@ -159,6 +161,10 @@ func (p *Player) ForgeKey() {
 // CalculateChainHandicap - Returns the total number of cards to reduce
 // the player's hand upon drawing cards.
 func (p *Player) CalculateChainHandicap() int {
+	if p.Chains == 0 {
+		return 0
+	}
+
 	chains := int(p.Chains / 6)
 
 	if p.Chains < 6 {
