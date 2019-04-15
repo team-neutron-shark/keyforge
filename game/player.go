@@ -75,12 +75,17 @@ func (p *Player) SetDeck(deck Deck) {
 	p.DrawPile = append(p.DrawPile, p.PlayerDeck.Cards...)
 }
 
+// ShuffleDrawPile - This function shuffles the player's draw pile (surprise).
 func (p *Player) ShuffleDrawPile() {
 	for i := 0; i < 10; i++ {
 		p.DrawPile = Shuffle(p.DrawPile)
 	}
 }
 
+// DrawCard - This function simulates a player drawing a card from the top
+// of the draw pile into the player's hand. If the draw pile is found to be
+// empty this function automatically shuffles the discard pile back into
+// the draw pile.
 func (p *Player) DrawCard() {
 	count := len(p.DrawPile)
 	index := len(p.DrawPile) - 1
@@ -99,11 +104,17 @@ func (p *Player) DrawCard() {
 	p.HandPile = AddCard(p.HandPile, card)
 }
 
+// Discard - Discard a card from the player's hand. Cards discarded in
+// this manner are sent to the player's discard pile.
 func (p *Player) Discard(card Card) {
 	p.HandPile = RemoveCard(p.HandPile, card)
 	p.DiscardPile = AddCard(p.DiscardPile, card)
 }
 
+// ShuffleDiscardPile - This function transfers the contents of the discard
+// pile to the draw pile and shuffles them. This is mostly useful for
+// shuffling the discard into the draw pile after the player has exhausted
+// the draw pile during play.
 func (p *Player) ShuffleDiscardPile() {
 	p.DrawPile = append(p.DrawPile, p.DiscardPile...)
 	p.DiscardPile = nil
@@ -117,11 +128,13 @@ func (p *Player) ShuffleDiscardPile() {
 	}
 }
 
+// DrawHand - Draws up a player hand to the appropriate number of cards.
+// This function factors in handicaps from chains when drawing.
 func (p *Player) DrawHand() {
 	cardNumber := len(p.HandPile)
 
 	if p.Debug {
-		fmt.Println(cardNumber, "cards in hand, drawing", 6-cardNumber, "cards.")
+		fmt.Println(cardNumber, "cards in hand, drawing", 6-cardNumber-p.CalculateChainHandicap(), "cards.")
 	}
 
 	// Draw back up to 6 cards, minus the handicap imposed by chains.
@@ -130,6 +143,10 @@ func (p *Player) DrawHand() {
 	}
 }
 
+// PlayCard - Play a card from the player's hand onto the board.
+// TODO: Add logic to account for creatures and artifacts. Right now during
+// simulated play they pretty much go directly to the discard pile rather
+// than being used for reaping/amber gain/etc.
 func (p *Player) PlayCard(card Card) {
 	foundCard, e := FindCardByID(p.HandPile, card.ID)
 
@@ -150,6 +167,10 @@ func (p *Player) PlayCard(card Card) {
 
 }
 
+// ForgeKey - Attempt to forge a key given enough aember.
+// TODO: Modify this function to account for board state. This function
+// does not currently account for cards that either increase or decrease
+// key forge costs.
 func (p *Player) ForgeKey() bool {
 	if p.Amber > 6 {
 		fmt.Println(p.Name, "forges a key!")
