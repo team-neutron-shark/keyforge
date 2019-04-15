@@ -39,6 +39,8 @@ func (c *Card) Stun() {
 	c.IsStunned = true
 }
 
+// Ready a given card. If a creature card is stunned then a second call
+// to this function is required in order to remove exhaustion.
 func (c *Card) Ready() {
 	// If stunned, remove stun, but do not ready.
 	if c.IsStunned {
@@ -238,6 +240,7 @@ func GetMinimumCreaturePower(cards []Card) int {
 	return power
 }
 
+// FindCardsByHouse - Return an array of cards filtered by house name.
 func FindCardsByHouse(cards []Card, house string) ([]Card, error) {
 	totalCards := []Card{}
 
@@ -255,6 +258,8 @@ func FindCardsByHouse(cards []Card, house string) ([]Card, error) {
 	return totalCards, nil
 }
 
+// GetHouses - Return an array of houses within a card pile.
+// Houses are represented as strings.
 func GetHouses(cards []Card) []string {
 	houses := []string{}
 
@@ -267,6 +272,7 @@ func GetHouses(cards []Card) []string {
 	return houses
 }
 
+// Shuffle - Shuffle a given card pile.
 func Shuffle(cards []Card) []Card {
 	for i := range cards {
 		j := rand.Intn(len(cards))
@@ -276,6 +282,7 @@ func Shuffle(cards []Card) []Card {
 	return cards
 }
 
+// RemoveCard - Removes a card from a given card pile.
 func RemoveCard(cards []Card, removeCard Card) []Card {
 	returnCards := []Card{}
 	found := false
@@ -296,20 +303,35 @@ func RemoveCard(cards []Card, removeCard Card) []Card {
 	return returnCards
 }
 
+// PopCard - Treats a card pile as if it were a stack and pops the top
+// card of the stack off of the pile. This function is primarily useful
+// for simulating draw operations, such as drawing cards from the draw
+// pile into a player's hand.
 func PopCard(cards []Card) []Card {
 	i := len(cards) - 1
 	return append(cards[:i], cards[i+1:]...)
 }
 
+// AddCard - Treats a card pile as if it were a stack and pushes a card
+// onto the top of a pile. This function is primarily used in conjunction
+// with PopCard() or RemoveCard() to transfer cards from one card pile to
+// another card pile.
 func AddCard(cards []Card, addCard Card) []Card {
 	return append(cards, addCard)
 }
 
+// ChooseRandomCard - Chooses a random card from a card pile and returns
+// the card object. This function is useful primarily for cards which have
+// a "use" ability which requires a player to discard a random card from
+// their hand.
 func ChooseRandomCard(cards []Card) (int, Card) {
 	i := rand.Intn(len(cards))
 	return i, cards[i]
 }
 
+// DrawCard - Simulate drawing a card from one card pile into another
+// card pile. This function is primarily used to simulate draws from the
+// draw pile into a player's hand.
 func DrawCard(source []Card, destination []Card) ([]Card, []Card) {
 	// Draw the top card
 	card := source[len(source)-1]
@@ -318,6 +340,9 @@ func DrawCard(source []Card, destination []Card) ([]Card, []Card) {
 	return source, destination
 }
 
+// CompareCardOrder - This function inspects two Card arrays to determine
+// whether or not the card orders match. Returns false in the event card
+// orders do not match and true when they do.
 func CompareCardOrder(original []Card, comparison []Card) bool {
 	for i := range original {
 		if original[i] != comparison[i] {
@@ -327,9 +352,12 @@ func CompareCardOrder(original []Card, comparison []Card) bool {
 	return true
 }
 
+// CardExists - Check for a card within a card pile. This function works
+// by checking card IDs within the card pile and will detect core set cards.
+// In order to detect mavericks cards must be detected by set and card number.
 func CardExists(cards []Card, card Card) bool {
 	for _, indexCard := range cards {
-		if card == indexCard {
+		if card.ID == indexCard.ID {
 			return true
 		}
 	}

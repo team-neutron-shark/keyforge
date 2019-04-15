@@ -155,6 +155,20 @@ func TestCardFindCardsByHouse(t *testing.T) {
 	}
 }
 
+func TestCardGetHouses(t *testing.T) {
+	deck, e := keyforge.LoadDeckFromFile("test_data/test_deck.json")
+
+	if e != nil {
+		t.Error(e.Error())
+	}
+
+	houses := keyforge.GetHouses(deck.Cards)
+
+	if len(houses) != 3 {
+		t.Errorf("There were %d houses detected in this deck! Each deck should contain 3 houses.", len(houses))
+	}
+}
+
 func TestCardRemoveCard(t *testing.T) {
 	deck, e := keyforge.LoadDeckFromFile("test_data/test_deck.json")
 
