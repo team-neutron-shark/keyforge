@@ -188,3 +188,11 @@ func (p *Player) DeployCreatureLeftFlank(card Card) []Card {
 func (p *Player) DeployCreatureRightFlank(card Card) []Card {
 	return AddCard(p.Creatures, card)
 }
+
+// DeployCreature - Generic creature deploy function to be used in the event
+// that the creatures array is empty. This function exists primarily for
+// readability purposes since calling DeployCreatureRightFlank() in the event
+// of an empty creature pile could be a bit confusing.
+func (p *Player) DeployCreature(card Card) []Card {
+	return AddCard(p.Creatures, card)
+}
