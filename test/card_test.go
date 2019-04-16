@@ -2,6 +2,7 @@ package tests
 
 import (
 	keyforge "keyforge/game"
+	"math/rand"
 	"testing"
 )
 
@@ -323,5 +324,42 @@ func TestCardCardExists(t *testing.T) {
 
 	if keyforge.CardExists(deck.Cards, card) {
 		t.Errorf("Card %s found after being removed from the deck!", card.CardTitle)
+	}
+}
+
+func TestCardPrependCard(t *testing.T) {
+	hand := []keyforge.Card{}
+
+	deck, e := keyforge.LoadDeckFromFile("test_data/test_deck.json")
+
+	selectedCard := deck.Cards[rand.Intn(len(deck.Cards))]
+
+	if e != nil {
+		t.Error(e.Error())
+	}
+
+	hand = keyforge.PrependCard(hand, selectedCard)
+
+	if len(hand) != 1 {
+		t.Errorf("Hand contains %d cards! Should contain 1.", len(hand))
+	}
+
+	if hand[0].ID != selectedCard.ID {
+		t.Errorf("Incorrect card prepended to the array! Should be %s.", selectedCard.CardTitle)
+	}
+
+	hand = nil
+	hand = keyforge.AddCard(hand, deck.Cards[0])
+	hand = keyforge.AddCard(hand, deck.Cards[1])
+	hand = keyforge.AddCard(hand, deck.Cards[2])
+
+	hand = keyforge.PrependCard(hand, selectedCard)
+
+	if len(hand) != 4 {
+		t.Errorf("There are %d currently in hand! Should be 4.", len(hand))
+	}
+
+	if hand[0].ID != selectedCard.ID {
+		t.Errorf("Incorrect card prepended to the array! Should be %s", selectedCard.CardTitle)
 	}
 }
