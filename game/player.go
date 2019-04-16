@@ -176,3 +176,15 @@ func (p *Player) CalculateChainHandicap() int {
 
 	return chains
 }
+
+// DeployCreatureLeftFlank - This function places a creature card on the left
+// flank of the battlefield
+func (p *Player) DeployCreatureLeftFlank(card Card) []Card {
+	return PrependCard(p.Creatures, card)
+}
+
+// DeployCreatureRightFlank - This function places a creature card on the right
+// flank of the battlefield
+func (p *Player) DeployCreatureRightFlank(card Card) []Card {
+	return AddCard(p.Creatures, card)
+}
