@@ -15,6 +15,7 @@ type Player struct {
 	DiscardPile []Card
 	ArchivePile []Card
 	PurgePile   []Card
+	Artifacts   []Card
 	FirstTurn   bool
 	Amber       int
 	Keys        int
