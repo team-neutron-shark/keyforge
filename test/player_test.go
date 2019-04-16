@@ -120,3 +120,97 @@ func TestPlayerShuffleDiscardPile(t *testing.T) {
 	}
 
 }
+
+func TestPlayerDeployCreature(t *testing.T) {
+	player := keyforge.NewPlayer()
+
+	deck, e := keyforge.LoadDeckFromFile("test_data/test_deck.json")
+
+	if e != nil {
+		t.Error(e.Error())
+	}
+
+	player.SetDeck(deck)
+
+	creatures := keyforge.GetCreatureCards(deck.Cards)
+
+	if len(creatures) < 1 {
+		t.Error("No creatures found in deck!")
+	}
+
+	player.Creatures = player.DeployCreature(creatures[0])
+
+	if len(player.Creatures) != 1 {
+		t.Errorf("There are %d creatures on the field! There should be 1 creature.", len(player.Creatures))
+	}
+
+	if creatures[0].ID != player.Creatures[0].ID {
+		t.Errorf("Wrong card added to the field! Should have been %s.", creatures[0].CardTitle)
+	}
+}
+
+func TestPlayerDeployCreatureLeftFlank(t *testing.T) {
+	player := keyforge.NewPlayer()
+
+	deck, e := keyforge.LoadDeckFromFile("test_data/test_deck.json")
+
+	if e != nil {
+		t.Error(e.Error())
+	}
+
+	player.SetDeck(deck)
+
+	creatures := keyforge.GetCreatureCards(player.PlayerDeck.Cards)
+
+	if len(creatures) < 2 {
+		t.Error("Deck not suitable for this test; less than 2 unique creature cards available.")
+	}
+
+	if creatures[0].ID == creatures[len(creatures)-1].ID {
+		t.Error("Cards chosen by the test were not unique!")
+	}
+
+	player.Creatures = player.DeployCreature(creatures[len(creatures)-1])
+	player.Creatures = player.DeployCreatureLeftFlank(creatures[0])
+
+	if len(player.Creatures) != 2 {
+		t.Errorf("There are %d creatures on the field! Should be 2.", len(player.Creatures))
+	}
+
+	if player.Creatures[0].ID != creatures[0].ID {
+		t.Errorf("Incorrect card placed at the left flank! Should be %s", creatures[0].CardTitle)
+	}
+}
+
+func TestPlayerDeployCreatureRightFlank(t *testing.T) {
+	player := keyforge.NewPlayer()
+
+	deck, e := keyforge.LoadDeckFromFile("test_data/test_deck.json")
+
+	if e != nil {
+		t.Error(e.Error())
+	}
+
+	player.SetDeck(deck)
+
+	creatures := keyforge.GetCreatureCards(player.PlayerDeck.Cards)
+
+	if len(creatures) < 2 {
+		t.Error("Deck not suitable for this test; less than 2 unique creature cards available.")
+	}
+
+	if creatures[0].ID == creatures[len(creatures)-1].ID {
+		t.Error("Cards chosen by the test were not unique!")
+	}
+
+	player.Creatures = player.DeployCreature(creatures[len(creatures)-1])
+	player.Creatures = player.DeployCreatureRightFlank(creatures[0])
+
+	if len(player.Creatures) != 2 {
+		t.Errorf("There are %d creatures on the field! Should be 2.", len(player.Creatures))
+	}
+
+	if player.Creatures[len(player.Creatures)-1].ID != creatures[0].ID {
+		t.Errorf("Incorrect card placed at the left flank! Should be %s", creatures[0].CardTitle)
+	}
+}
