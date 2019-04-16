@@ -365,3 +365,12 @@ func CardExists(cards []Card, card Card) bool {
 
 	return false
 }
+
+func PrependCard(cards []Card, card Card) []Card {
+	newCards := []Card{}
+
+	newCards = append(newCards, card)
+	newCards = append(newCards, cards...)
+
+	return newCards
+}
