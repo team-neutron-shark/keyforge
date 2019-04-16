@@ -180,13 +180,17 @@ func (p *Player) CalculateChainHandicap() int {
 // DeployCreatureLeftFlank - This function places a creature card on the left
 // flank of the battlefield
 func (p *Player) DeployCreatureLeftFlank(card Card) []Card {
-	return PrependCard(p.Creatures, card)
+	card.IsExhausted = true
+	creatures := PrependCard(p.Creatures, card)
+	return creatures
 }
 
 // DeployCreatureRightFlank - This function places a creature card on the right
 // flank of the battlefield
 func (p *Player) DeployCreatureRightFlank(card Card) []Card {
-	return AddCard(p.Creatures, card)
+	card.IsExhausted = true
+	creatures := AddCard(p.Creatures, card)
+	return creatures
 }
 
 // DeployCreature - Generic creature deploy function to be used in the event
@@ -194,5 +198,7 @@ func (p *Player) DeployCreatureRightFlank(card Card) []Card {
 // readability purposes since calling DeployCreatureRightFlank() in the event
 // of an empty creature pile could be a bit confusing.
 func (p *Player) DeployCreature(card Card) []Card {
-	return AddCard(p.Creatures, card)
+	card.IsExhausted = true
+	creatures := AddCard(p.Creatures, card)
+	return creatures
 }
