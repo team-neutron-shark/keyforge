@@ -4,6 +4,8 @@ import (
 	"strings"
 )
 
+// HouseExists - Determine whether a house is present in an array of house
+// names.
 func HouseExists(array []string, house string) bool {
 	for _, s := range array {
 		if strings.ToLower(s) == strings.ToLower(house) {
@@ -13,6 +15,7 @@ func HouseExists(array []string, house string) bool {
 	return false
 }
 
+// PrepareDrawPile - This function sets up a player's initial hand.
 func PrepareDrawPile(player *Player) {
 	player.DrawPile = nil
 	player.DrawPile = append(player.DrawPile, player.PlayerDeck.Cards...)

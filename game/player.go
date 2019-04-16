@@ -2,14 +2,9 @@ package keyforge
 
 import "fmt"
 
-type PlayerEntity interface {
-	GetDeck() Deck
-	GetDrawPile() []Card
-	GetDiscardPile() []Card
-	GetArchivePile() []Card
-	GetPurgePile() []Card
-}
-
+// Player - This struct represents players within the game. This type is
+// also the foundation of the Bot class, as it implements most if not all
+// the functionality Player has.
 type Player struct {
 	Name        string
 	Game        *Game
@@ -26,6 +21,7 @@ type Player struct {
 	Chains      int
 }
 
+// NewPlayer - Returns a pointer to a new player object.
 func NewPlayer() *Player {
 	player := new(Player)
 	player.DrawPile = make([]Card, 0)
@@ -36,6 +32,8 @@ func NewPlayer() *Player {
 	return player
 }
 
+// PrettyPrintHand - Debug function used to view the contents of a player's
+// hand without making your eyes bleed.
 func (p *Player) PrettyPrintHand() {
 	fmt.Println()
 	fmt.Println("########", p.Name, "'s hand ########")
@@ -45,30 +43,9 @@ func (p *Player) PrettyPrintHand() {
 	fmt.Println()
 }
 
-func (p Player) GetDeck() Deck {
-	return p.PlayerDeck
-}
-
-func (p Player) GetDrawPile() []Card {
-	return p.DrawPile
-}
-
-func (p Player) GetDiscardPile() []Card {
-	return p.DiscardPile
-}
-
-func (p Player) GetArchivePile() []Card {
-	return p.ArchivePile
-}
-
-func (p Player) GetPurgePile() []Card {
-	return p.PurgePile
-}
-
-func SetDeck(player PlayerEntity, deck Deck) {
-
-}
-
+// SetDeck - Sets a player's deck. If a deck has already been defined it will
+// be cleared and replaced with the specified deck. This function is mainly
+// useful for setting up players at the beginning of a game.
 func (p *Player) SetDeck(deck Deck) {
 	p.PlayerDeck = deck
 	p.DrawPile = nil

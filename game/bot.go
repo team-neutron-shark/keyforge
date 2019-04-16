@@ -5,15 +5,20 @@ import (
 	"strings"
 )
 
+// Bot - This type represents a bot or simulated player within the game.
+// This type implements Player functionality.
 type Bot struct {
 	Player
 }
 
+// NewBot - Create a new bot object and return a pointer.
 func NewBot() *Bot {
 	bot := new(Bot)
 	return bot
 }
 
+// DetermineMulligan - This function is intended to determine whether or not
+// to mulligan after a bot draws its first hand of the game.
 func (b *Bot) DetermineMulligan() bool {
 	houses := GetHouses(b.HandPile)
 	creatures := GetCreatureCards(b.HandPile)
@@ -43,6 +48,8 @@ func (b *Bot) DetermineMulligan() bool {
 	return true
 }
 
+// DetermineActiveHouse - This function is intended to be used to allow the
+// bot to declare an active house at the beginning of its turn.
 func (b *Bot) DetermineActiveHouse() string {
 	houses := GetHouses(b.HandPile)
 	cards := map[string][]Card{}
@@ -64,6 +71,7 @@ func (b *Bot) DetermineActiveHouse() string {
 	return houseChoice
 }
 
+// PlayCards - This function plays cards from a given house.
 func (b *Bot) PlayCards(house string) {
 	cards, e := FindCardsByHouse(b.HandPile, house)
 

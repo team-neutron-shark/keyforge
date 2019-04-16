@@ -31,6 +31,7 @@ type Card struct {
 	ArmorBonus  int    `json:"-"`
 }
 
+// Stun - Mark a creature card as stunned.
 func (c *Card) Stun() {
 	if strings.ToLower(c.CardType) != "creature" {
 		return
