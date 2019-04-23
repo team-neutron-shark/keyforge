@@ -363,3 +363,23 @@ func TestCardPrependCard(t *testing.T) {
 		t.Errorf("Incorrect card prepended to the array! Should be %s", selectedCard.CardTitle)
 	}
 }
+
+func TestCardSortCards(t *testing.T) {
+	deck, e := keyforge.LoadDeckFromFile("test_data/test_deck.json")
+
+	if e != nil {
+		t.Error(e.Error())
+	}
+
+	testSlice := keyforge.SortCardsByNumber(deck.Cards)
+
+	for i, card := range testSlice {
+		if i+1 > len(testSlice)-1 {
+			break
+		}
+
+		if card.CardNumber > testSlice[i+1].CardNumber {
+			t.Error("Deck was not properly sorted!")
+		}
+	}
+}

@@ -1,9 +1,12 @@
 package keyforge
 
 import (
+	"bytes"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"math/rand"
+	"os"
 	"strings"
 )
 
@@ -373,4 +376,99 @@ func PrependCard(cards []Card, card Card) []Card {
 	newCards = append(newCards, cards...)
 
 	return newCards
+}
+
+func SortCardsByNumber(cards []Card) []Card {
+	size := len(cards)
+
+	if size < 1 {
+		return cards
+	}
+
+	for !BubbleSortByExpansionNumber(cards) {
+		BubbleSortByExpansionNumber(cards)
+	}
+
+	for !BubbleSortByCardNumber(cards) {
+		BubbleSortByCardNumber(cards)
+	}
+
+	return cards
+}
+
+func BubbleSortByCardNumber(cards []Card) bool {
+	sorted := true
+
+	if len(cards) < 2 {
+		return sorted
+	}
+
+	for i := range cards {
+
+		// Prevent our code from reading outside the bounds of the slice.
+		if i+1 > len(cards)-1 {
+			break
+		}
+
+		// If our left-most value is greater than our right-most value then
+		// swap them. Mark the sorted variable to false to perform another
+		// pass over the slice.
+		if cards[i].CardNumber > cards[i+1].CardNumber {
+			cards[i], cards[i+1] = cards[i+1], cards[i]
+			sorted = false
+		}
+	}
+
+	return sorted
+}
+
+func BubbleSortByExpansionNumber(cards []Card) bool {
+	sorted := true
+
+	if len(cards) < 2 {
+		return sorted
+	}
+
+	for i := range cards {
+
+		// Prevent our code from reading outside the bounds of the slice.
+		if i+1 > len(cards)-1 {
+			break
+		}
+
+		// If our left-most value is greater than our right-most value then
+		// swap them. Mark the sorted variable to false to perform another
+		// pass over the slice.
+		if cards[i].Expansion > cards[i+1].Expansion {
+			cards[i], cards[i+1] = cards[i+1], cards[i]
+			sorted = false
+		}
+	}
+
+	return sorted
+}
+
+func LoadCardsFromFile(filename string) ([]Card, error) {
+	cards := []Card{}
+	buffer := bytes.Buffer{}
+
+	file, e := os.Open(filename)
+
+	if e != nil {
+		return cards, e
+	}
+
+	buffer.ReadFrom(file)
+
+	if e != nil {
+		return cards, e
+	}
+
+	e = json.Unmarshal(buffer.Bytes(), &cards)
+
+	if e != nil {
+		return cards, e
+	}
+
+	return cards, nil
 }
